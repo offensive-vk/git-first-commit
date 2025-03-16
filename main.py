@@ -1,6 +1,5 @@
 # still a wip, atleast for now.
-# 
-# 
+
 import os
 import subprocess
 import datetime
@@ -103,3 +102,4 @@ if __name__ == "__main__":
 
 
 # Documentation is not finished yet, publishing it to github with docs and ci soon.
+# Will be working on next week. sorry.
