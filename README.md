@@ -6,15 +6,15 @@
 
 ## 🎯 Features
 
-✅ Clone any Git repository 🔗
-✅ Retrieve & modify the **first commit** ✍️
-✅ Edit the commit **message, date, author** 🕒
-✅ Modify commit **content** before re-amending 📄
-✅ **Delete** the first commit (Rebase) ❌
-✅ Create a **branch** from the first commit 🌱
-✅ View detailed **commit stats** 📊
-✅ Handles directory naming dynamically 📂
-✅ **User-friendly prompts & error handling** 💡
+- ✅ Clone any Git repository 🔗
+- ✅ Retrieve & modify the **first commit** ✍️
+- ✅ Edit the commit **message, date, author** 🕒
+- ✅ Modify commit **content** before re-amending 📄
+- ✅ **Delete** the first commit (Rebase) ❌
+- ✅ Create a **branch** from the first commit 🌱
+- ✅ View detailed **commit stats** 📊
+- ✅ Handles directory naming dynamically 📂
+- ✅ **User-friendly prompts & error handling** 💡
 
 ## 📌 Prerequisites
 
