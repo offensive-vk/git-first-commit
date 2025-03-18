@@ -4,14 +4,13 @@ import datetime
 import time
 import random
 import string
-
+import re
 
 def log(message, success=True):
     """Logs a message with timestamp and success/failure status."""
     timestamp = datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
     checkmark = "\033[92m[✔]\033[0m" if success else "\033[91m[✘]\033[0m"
     print(f"{timestamp} {checkmark} {message}")
-
 
 def run_command(command):
     """Runs a shell command and returns its stdout and stderr."""
@@ -21,27 +20,29 @@ def run_command(command):
         log(f"Error executing: {command}\n{result.stderr}", success=False)
     return result.stdout.strip(), result.stderr.strip()
 
+def banner():
+    """Displays the script banner."""
+    print("""
+    ==========================================================
+    🔥 Git First Commit 🔥
+    Use: Make changes to the First Commit of a git repository.
+    Author: @offensive-vk
+    Source: https://github.com/offensive-vk/git-first-commit
+    ==========================================================
+    """)
 
-def generate_random_directory():
-    """Generates a unique random directory name with 'first-*' prefix."""
+def generate_random_dir():
+    """Generates a unique directory name with 'first-*' prefix."""
     while True:
-        random_suffix = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
+        random_suffix = ''.join(random.choices(string.ascii_lowercase + string.digits, k=6))
         dir_name = f"first-{random_suffix}"
         if not os.path.exists(dir_name):
             return dir_name
 
-
-def banner():
-    """Displays the script banner."""
-    print("""
-    ========================================================
-    🔥 Git First Commit Modifier 🔥
-    Modify, Delete, or Inspect the First Commit of any git repository.
-    Author: Vedansh
-    Source: Custom Script
-    ========================================================
-    """)
-
+def extract_repo_name(repo_url):
+    """Extracts the repository name from the GitHub URL."""
+    match = re.search(r'([^/]+)\.git$', repo_url) or re.search(r'([^/]+)$', repo_url)
+    return match.group(1) if match else generate_random_dir()
 
 def clone_repository():
     """Prompts the user for a repository URL, clones it, and changes into the directory."""
@@ -50,18 +51,15 @@ def clone_repository():
         log("No repository URL provided!", success=False)
         exit(1)
     
-    repo_name = repo_url.rstrip('/').split('/')[-1] if '/' in repo_url else None
-    clone_dir = repo_name if repo_name and not os.path.exists(repo_name) else generate_random_directory()
-    
-    stdout, stderr = run_command(f"git clone {repo_url} {clone_dir}")
+    repo_name = extract_repo_name(repo_url)
+    stdout, stderr = run_command(f"git clone {repo_url} {repo_name}")
     if stderr:
         log("Failed to clone repository! Ensure the URL is correct and you have access.", success=False)
         exit(1)
     
-    log(f"Repository cloned successfully into {clone_dir}. Changing directory...")
+    log(f"Repository cloned successfully into {repo_name}. Changing directory...")
     time.sleep(2)
-    os.chdir(clone_dir)
-
+    os.chdir(repo_name)
 
 def get_first_commit():
     """Returns the hash of the first commit in the repository."""
@@ -71,7 +69,6 @@ def get_first_commit():
         return None
     return commit_hash
 
-
 def view_commit_details(commit_hash):
     """Displays the details of the first commit."""
     stdout, stderr = run_command(f"git show {commit_hash} --stat")
@@ -80,7 +77,6 @@ def view_commit_details(commit_hash):
     else:
         print(stdout)
     time.sleep(2)
-
 
 def create_branch_from_first_commit(commit_hash):
     """Creates a new branch from the first commit."""
@@ -93,7 +89,6 @@ def create_branch_from_first_commit(commit_hash):
     log(f"Branch '{branch_name}' created from the first commit.")
     time.sleep(2)
 
-
 def edit_commit_message(commit_hash):
     """Allows the user to modify the first commit message."""
     new_message = input("Enter new commit message: ").strip()
@@ -104,7 +99,6 @@ def edit_commit_message(commit_hash):
     run_command(f'GIT_COMMITTER_DATE="$(git show -s --format=%ci {commit_hash})" git commit --amend -m "{new_message}"')
     log("Commit message updated successfully.")
     time.sleep(2)
-
 
 def edit_commit_date(commit_hash):
     """Allows the user to modify the commit date."""
@@ -118,7 +112,6 @@ def edit_commit_date(commit_hash):
     log("Commit date updated successfully.")
     time.sleep(2)
 
-
 def modify_commit_content():
     """Allows the user to modify files before amending the first commit."""
     log("Modify the files as needed, then press Enter to continue...")
@@ -127,13 +120,11 @@ def modify_commit_content():
     log("Commit content updated successfully.")
     time.sleep(2)
 
-
 def delete_first_commit(commit_hash):
     """Deletes the first commit and rebases the repository."""
     run_command(f"git rebase --onto {commit_hash}^ {commit_hash}")
     log("First commit deleted successfully.")
     time.sleep(2)
-
 
 def main():
     """Main function that orchestrates user choices."""
@@ -183,7 +174,6 @@ def main():
     
     log("Done. If changes were made, you may need to force push: git push --force")
     time.sleep(2)
-
 
 if __name__ == "__main__":
     main()
